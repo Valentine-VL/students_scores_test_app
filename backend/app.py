@@ -1,17 +1,22 @@
 import json
-from bottle import route, run, template, get, post, request, HTTPError, app
+import os
 import sqlite3
-from db_init import populate_table_with_data
+
+from bottle import route, run, template, get, post, request, HTTPError, app
 from bottle_cors_plugin import cors_plugin
+
+from db_init import populate_table_with_data
+
+current_path = os.path.abspath(__file__).replace('app.py', '')
 
 app = app()
 app.install(cors_plugin('*'))
 
 
-db = sqlite3.connect('students.db')
+db = sqlite3.connect(current_path + 'students.db')
 db_cursor = db.cursor()
 
-populate_table_with_data(db)
+populate_table_with_data(db, current_path)
 
 def get_from_db_by_query(query, values=()):
     db_cursor.execute(query, values)
@@ -19,8 +24,8 @@ def get_from_db_by_query(query, values=()):
     return results
 
 @route('/')
-def index(name='Valentyn'):
-    return template('<b>Hello {{name}}</b>!', name=name)
+def index():
+    return template('<b>Hello Username</b>!')
 
 # STUDENTS
 @get('/students')

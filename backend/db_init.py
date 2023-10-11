@@ -1,4 +1,3 @@
-import os
 import csv
 
 
@@ -7,7 +6,7 @@ def table_exists(cursor, table_name):
     return result.fetchone() is not None
 
 
-def populate_table_with_data(db):
+def populate_table_with_data(db, path):
     db_cursor = db.cursor()
     if not table_exists(db_cursor, 'students'):
         students_query = '''
@@ -68,7 +67,7 @@ def populate_table_with_data(db):
                        '''
         db_cursor.execute(insert_disciplines)
 
-        with open('students_data.csv', 'r') as csvfile:
+        with open(path + 'students_data.csv', 'r') as csvfile:
             csvreader = csv.DictReader(csvfile)
             result = db_cursor.execute("SELECT * FROM main.disciplines")
             disciplines = result.fetchall()
